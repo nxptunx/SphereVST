@@ -1,6 +1,11 @@
 #pragma once
 #include <JuceHeader.h>
 #include "PluginProcessor.h"
+// Fix for Windows OpenGL headers
+#if JUCE_WINDOWS
+ #include <windows.h>
+#endif
+
 #include <GL/gl.h>
 #include <GL/glu.h>
 
