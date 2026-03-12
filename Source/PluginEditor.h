@@ -18,10 +18,6 @@ private:
     juce::OpenGLContext openGLContext;
     float rotation = 0.0f;
 
-    // We'll use a simple JUCE-native way to draw the sphere 
-    // to avoid the GLU header nightmare on Windows
-    void drawSphere (float radius, int slices, int stacks);
-
     SphereVSTAudioProcessor& audioProcessor;
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (SphereVSTEditor)
 };
