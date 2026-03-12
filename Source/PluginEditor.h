@@ -1,13 +1,9 @@
 #pragma once
 #include <JuceHeader.h>
 #include "PluginProcessor.h"
-// Fix for Windows OpenGL headers
-#if JUCE_WINDOWS
- #include <windows.h>
-#endif
 
-#include <GL/gl.h>
-#include <GL/glu.h>
+// JUCE-safe OpenGL includes
+#include <juce_opengl/juce_opengl.h>
 
 class SphereVSTEditor : public juce::AudioProcessorEditor, public juce::OpenGLRenderer {
 public:
@@ -23,9 +19,8 @@ public:
 
 private:
     juce::OpenGLContext openGLContext;
-    juce::OpenGLTexture texture;
     float rotation = 0.0f;
-    GLUquadric* sphere = nullptr;
+    GLUquadric* sphere = nullptr; // Note: This requires glu32.lib on Windows
 
     SphereVSTAudioProcessor& audioProcessor;
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (SphereVSTEditor)

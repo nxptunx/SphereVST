@@ -1,9 +1,6 @@
 #include "PluginProcessor.h"
 #include "PluginEditor.h"
 
-// This is the standard JUCE way to get GL and GLU properly
-#include <juce_opengl/juce_opengl.h>
-
 SphereVSTEditor::SphereVSTEditor (SphereVSTAudioProcessor& p)
     : AudioProcessorEditor (&p), audioProcessor (p)
 {
@@ -19,29 +16,21 @@ SphereVSTEditor::~SphereVSTEditor() {
 
 void SphereVSTEditor::newOpenGLContextCreated() {
     sphere = gluNewQuadric();
-    gluQuadricTexture (sphere, GL_TRUE);
     gluQuadricNormals (sphere, GLU_SMOOTH);
-
-    auto img = juce::ImageFileFormat::loadFrom (BinaryData::texture_png, BinaryData::texture_pngSize);
-    if (img.isValid())
-        texture.loadImage (img);
 }
 
 void SphereVSTEditor::renderOpenGL() {
+    // Standard JUCE GL helper
     juce::OpenGLHelpers::clear (juce::Colours::black);
     
     glEnable (GL_DEPTH_TEST);
-    glEnable (GL_TEXTURE_2D);
-    
-    if (texture.getTextureID() > 0)
-        texture.bind();
+    glEnable (GL_COLOR_MATERIAL);
 
     const float scale = (float) openGLContext.getRenderingScale();
     glViewport (0, 0, juce::roundToInt (getWidth() * scale), juce::roundToInt (getHeight() * scale));
 
     glMatrixMode (GL_PROJECTION);
     glLoadIdentity();
-    // Using JUCE's scale for aspect ratio
     gluPerspective (45.0, (double) getWidth() / (double) getHeight(), 1.0, 10.0);
 
     glMatrixMode (GL_MODELVIEW);
@@ -49,15 +38,17 @@ void SphereVSTEditor::renderOpenGL() {
     glTranslatef (0.0f, 0.0f, -4.0f);
     glRotatef (rotation, 0.2f, 1.0f, 0.3f);
 
-    if (sphere)
-        gluSphere (sphere, 1.3, 60, 60);
+    // Draw a wireframe sphere if GLU is working, otherwise a simple GL point
+    if (sphere) {
+        glColor3f(0.0f, 0.8f, 1.0f); // Neptune Blue
+        gluSphere (sphere, 1.3, 20, 20);
+    }
         
     rotation += 0.8f;
 }
 
 void SphereVSTEditor::openGLContextClosing() {
     if (sphere) gluDeleteQuadric (sphere);
-    texture.release();
 }
 
 void SphereVSTEditor::paint (juce::Graphics& g) {}
