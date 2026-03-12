@@ -1,8 +1,8 @@
 #include "PluginProcessor.h"
 #include "PluginEditor.h"
 
-// JUCE's safe way to get OpenGL headers across all platforms
-#include <juce_opengl/native/juce_OpenGLHelpers.h>
+// This is the standard JUCE way to get GL and GLU properly
+#include <juce_opengl/juce_opengl.h>
 
 SphereVSTEditor::SphereVSTEditor (SphereVSTAudioProcessor& p)
     : AudioProcessorEditor (&p), audioProcessor (p)
@@ -41,6 +41,7 @@ void SphereVSTEditor::renderOpenGL() {
 
     glMatrixMode (GL_PROJECTION);
     glLoadIdentity();
+    // Using JUCE's scale for aspect ratio
     gluPerspective (45.0, (double) getWidth() / (double) getHeight(), 1.0, 10.0);
 
     glMatrixMode (GL_MODELVIEW);
